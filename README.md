@@ -1,4 +1,4 @@
-# A4.3 — Factories: geração de relatórios
+# A4.3 — Factories: aplicação para geração de relatórios
 
 **Tópicos Avançados de POO · 2026/27 · Atividade de programação: 50 minutos**
 
