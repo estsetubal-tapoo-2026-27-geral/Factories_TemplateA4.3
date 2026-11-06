@@ -1,0 +1,14 @@
+# Maven and generated reports
+/target/
+*.class
+*.log
+# IDE settings
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+# Operating systems
+.DS_Store
+Thumbs.db
