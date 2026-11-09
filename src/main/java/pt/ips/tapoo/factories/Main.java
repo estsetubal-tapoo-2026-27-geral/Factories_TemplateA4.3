@@ -40,28 +40,37 @@ public final class Main {
         Files.createDirectories(output);
 
         // Each method below shows one version of the same application.
-        switch (mode) {
-            case "baseline":
-                runBaseline(data, output);
-                break;
-            case "" +
-                         "":
-                runSimpleFactory(data, output);
-                break;
-            case "method":
-                runFactoryMethod(data, output);
-                break;
-            case "abstract":
-                runAbstractFactory(data, output);
-                break;
-            case "all":
-                runBaseline(data, output);
-                runSimpleFactory(data, output);
-                runFactoryMethod(data, output);
-                runAbstractFactory(data, output);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown mode: " + mode);
+        try {
+            switch (mode) {
+                case "baseline":
+                    runBaseline(data, output);
+                    break;
+                case "simple":
+                    runSimpleFactory(data, output);
+                    break;
+                case "method":
+                    runFactoryMethod(data, output);
+                    break;
+                case "abstract":
+                    runAbstractFactory(data, output);
+                    break;
+                case "all":
+                    runBaseline(data, output);
+                    runSimpleFactory(data, output);
+                    runFactoryMethod(data, output);
+                    runAbstractFactory(data, output);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown mode: " + mode);
+            }
+        } catch (UnsupportedOperationException e) {
+            // The methods still to be completed throw this exception with a "TODO ..." message.
+            String message = e.getMessage();
+            if (message == null || !message.startsWith("TODO")) {
+                throw e;
+            }
+            System.err.println("Activity incomplete: " + message);
+            return;
         }
 
         System.out.println("Reports saved in: " + output.toAbsolutePath());

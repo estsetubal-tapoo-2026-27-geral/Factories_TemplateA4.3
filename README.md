@@ -18,13 +18,14 @@ Trabalhe preferencialmente em pares, mantenha as interfaces e assinaturas fornec
 
 3. **Verificar a base:** execute apenas os testes da classe `FoundationTest`, disponíveis em `src/test/java`. Estes devem passar antes de iniciar as implementações.
 
-4. **Executar a versão inicial:** em **Run → Edit Configurations…**, selecione a configuração **Application** da classe `Main`, indique `baseline` em **Program arguments** e execute-a.
+4. **Executar a versão inicial:** em **Run → Edit Configurations…**, crie ou selecione a configuração **Application** da classe `Main`, indique `baseline` em **Program arguments** e execute-a.
 
 5. **Consultar os resultados:** abra `target/reports/baseline-report.html` num navegador e `target/reports/baseline-report.md` na pré-visualização Markdown do IDE. Confirme os **3 estudantes** e a média **11.33**.
 
-Ao desenvolver cada etapa, altere o argumento do `Main` para `simple`, `method` ou `abstract` e execute, respetivamente, `SimpleFactoryTest`, `FactoryMethodTest` ou `AbstractFactoryTest`. Estes testes poderão falhar enquanto a implementação correspondente estiver incompleta. O argumento `all` permite executar todas as variantes.
+Ao desenvolver cada etapa, altere o argumento do `Main` para `simple`, `method` ou `abstract` e execute, respetivamente, `SimpleFactoryTest`, `FactoryMethodTest` ou `AbstractFactoryTest`. Estes testes poderão falhar enquanto a implementação correspondente estiver incompleta. O argumento `all` permite executar todas as variantes. Os comandos Maven equivalentes estão na secção 4.
 
 > **Atenção aos contratos:** nas etapas 1 e 2, `documents.ReportDocument` utiliza `render(data)`; na etapa 3, `abstractfactory.ReportDocument` utiliza `render(data, tableContent)`, recebendo uma tabela produzida separadamente. Verifique os imports para utilizar a interface adequada.
+
 ## 3. Guião de trabalho — 50 minutos
 
 | Etapa | Tempo | Objetivo |
@@ -34,7 +35,6 @@ Ao desenvolver cada etapa, altere o argumento do `Main` para `simple`, `method` 
 | 3 — Abstract Factory | 15 min | Obter documento e tabela da mesma família |
 | 4 — Verificação e reflexão | 5 min | Comparar resultados e justificar as decisões |
 
-
 ### Etapa 1 — Simple Factory · 8 minutos
 
 **Problema:** o cliente escolhe classes concretas e chama os seus construtores. Outros clientes poderão repetir a decisão.
@@ -43,8 +43,7 @@ Ao desenvolver cada etapa, altere o argumento do `Main` para `simple`, `method` 
 2. Identifique a seleção do formato e as chamadas aos construtores.
 3. Complete **SF1**, em `simplefactory.ReportDocumentFactory.create(format)`, para fornecer o documento correspondente a cada valor de `ReportFormat`.
 4. Complete **SF2**, em `simplefactory.ReportApplication.export(data, format, destination)`, usando a fábrica para obter o documento, gerar o conteúdo e guardar o ficheiro.
-5. Execute os testes e a variante "simple".
-
+5. Execute `SimpleFactoryTest` (ou `mvn test -Pstage1`) e a variante `simple`.
 
 **Critério de conclusão:** ambos os formatos são gerados. O cliente de `simplefactory` depende da fábrica e da interface do produto, sem instanciar ou importar documentos concretos.
 
@@ -62,8 +61,7 @@ Ao desenvolver cada etapa, altere o argumento do `Main` para `simple`, `method` 
 2. Complete **FM1**, em `ReportExporter.export(data, destination)`, utilizando o produto obtido através do factory method.
 3. Complete **FM2**, em `HtmlReportExporter.createDocument()`.
 4. Complete **FM3**, em `MarkdownReportExporter.createDocument()`.
-5. Execute os testes e a variante: "method"
-
+5. Execute `FactoryMethodTest` (ou `mvn test -Pstage2`) e a variante `method`.
 
 **Critério de conclusão:** o processo comum usa a interface do produto. As subclasses decidem o documento criado. O método `export()` funciona também com um criador diferente dos dois já fornecidos.
 
@@ -88,8 +86,7 @@ O teste `commonProcessUsesTheOverriddenFactoryMethod` verifica precisamente esse
 2. Complete **AF1** e **AF2**, em `HtmlReportFactory`.
 3. Complete **AF3** e **AF4**, em `MarkdownReportFactory`.
 4. Complete **AF5**, em `ReportGenerator.generate(data)`, usando os produtos obtidos da fábrica recebida no construtor para compor o relatório.
-5. Execute os testes e a variante:"abstract"
-
+5. Execute `AbstractFactoryTest` (ou `mvn test -Pstage3`) e a variante `abstract`.
 
 **Critério de conclusão:** o gerador trabalha com as interfaces e recebe a família através da fábrica. Deve funcionar com outra fábrica que respeite os contratos, sem alteração do seu código.
 
@@ -105,9 +102,7 @@ O teste `generatorUsesBothProductsSuppliedByItsFactory` verifica se o gerador ut
 
 ### Etapa 4 — Verificação e reflexão · 5 minutos
 
-Execute todos os testes e gere os resultados das quatro variantes: "all"
-
-
+Execute todos os testes (`mvn test -Pall-stages`) e gere os resultados das quatro variantes com o argumento `all`.
 
 Compare os relatórios HTML entre si e os relatórios Markdown entre si: **o conteúdo deve manter-se igual ao da versão inicial**.
 
@@ -118,16 +113,28 @@ Registe as respostas em [REFLECTION.md](REFLECTION.md):
 
 Reveja também as dependências: os testes verificam o comportamento; a inspeção do código e do UML permite confirmar a distribuição de responsabilidades.
 
-## 5. Comandos de execução e testes
+## 4. Comandos de execução e testes
 
-Os perfis de etapa são **independentes**. Utilize um perfil de cada vez, ou `all-stages` para verificar o conjunto.
+Execute os comandos na pasta que contém `pom.xml`, num terminal com Maven, ou no IntelliJ IDEA através de **Execute Maven Goal**, na janela **Maven**.
+
+| Objetivo | Comando |
+|---|---|
+| Testes da base (`FoundationTest`) | `mvn test` |
+| Testes da etapa 1 | `mvn test -Pstage1` |
+| Testes da etapa 2 | `mvn test -Pstage2` |
+| Testes da etapa 3 | `mvn test -Pstage3` |
+| Todos os testes | `mvn test -Pall-stages` |
+| Executar uma variante | `mvn compile exec:java "-Dexec.args=simple"` |
+
+No último comando, substitua `simple` por `baseline`, `method`, `abstract` ou `all`. Os relatórios são gravados em `target/reports`.
+
+Os perfis de etapa são **independentes**: cada um executa os testes da base e os testes da etapa indicada. Utilize um perfil de cada vez, ou `all-stages` para verificar o conjunto.
 
 No IDE, executar todos os testes diretamente pode ativar também os testes das etapas incompletas. Para acompanhar a atividade, execute a classe de testes da etapa ou utilize os comandos Maven acima.
 
-
 Enquanto uma etapa estiver incompleta, a execução da respetiva variante termina com uma mensagem `Activity incomplete: TODO ...`. Este comportamento identifica o trabalho pendente.
 
-## 4. Checklist final
+## 5. Checklist final
 
 - [ ] Os 10 métodos assinalados foram completados.
 - [ ] A seleção da Simple Factory está centralizada na fábrica.
@@ -137,7 +144,7 @@ Enquanto uma etapa estiver incompleta, a execução da respetiva variante termin
 - [ ] Os ficheiros de saída preservam o conteúdo da versão inicial.
 - [ ] As duas respostas de `REFLECTION.md` estão preenchidas.
 
-## 5. Atividade complementar — família Plain Text
+## 6. Atividade complementar — família Plain Text
 
 Na variante Abstract Factory, acrescente:
 
